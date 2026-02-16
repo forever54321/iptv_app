@@ -4,14 +4,14 @@ import '../../models/playlist_source.dart';
 import '../../providers/playlist_source_provider.dart';
 import '../../services/playlist_fetch_service.dart';
 
-class AddPlaylistDialog extends ConsumerStatefulWidget {
-  const AddPlaylistDialog({super.key});
+class AddPlaylistSheet extends ConsumerStatefulWidget {
+  const AddPlaylistSheet({super.key});
 
   @override
-  ConsumerState<AddPlaylistDialog> createState() => _AddPlaylistDialogState();
+  ConsumerState<AddPlaylistSheet> createState() => _AddPlaylistSheetState();
 }
 
-class _AddPlaylistDialogState extends ConsumerState<AddPlaylistDialog> {
+class _AddPlaylistSheetState extends ConsumerState<AddPlaylistSheet> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _urlController = TextEditingController();
@@ -32,115 +32,154 @@ class _AddPlaylistDialogState extends ConsumerState<AddPlaylistDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Add Playlist'),
-      content: SizedBox(
-        width: 450,
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 12),
-                SegmentedButton<PlaylistType>(
-                  segments: const [
-                    ButtonSegment(
-                      value: PlaylistType.direct,
-                      label: Text('Direct URL'),
-                      icon: Icon(Icons.link),
-                    ),
-                    ButtonSegment(
-                      value: PlaylistType.xtreamCodes,
-                      label: Text('Xtream Codes'),
-                      icon: Icon(Icons.dns),
-                    ),
-                  ],
-                  selected: {_type},
-                  onSelectionChanged: (s) => setState(() => _type = s.first),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _urlController,
-                  decoration: InputDecoration(
-                    labelText: _type == PlaylistType.direct
-                        ? 'M3U URL'
-                        : 'Server URL',
-                    hintText: _type == PlaylistType.direct
-                        ? 'https://example.com/playlist.m3u'
-                        : 'http://server:port',
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Required';
-                    if (!Uri.tryParse(v)!.hasScheme) return 'Invalid URL';
-                    return null;
-                  },
-                ),
-                if (_type == PlaylistType.xtreamCodes) ...[
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(labelText: 'Username'),
-                    validator: (v) =>
-                        _type == PlaylistType.xtreamCodes && (v == null || v.isEmpty)
-                            ? 'Required'
-                            : null,
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    validator: (v) =>
-                        _type == PlaylistType.xtreamCodes && (v == null || v.isEmpty)
-                            ? 'Required'
-                            : null,
-                  ),
-                ],
-                const SizedBox(height: 16),
-                if (_testResult != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      _testResult!,
-                      style: TextStyle(
-                        color: _testResult!.startsWith('Success')
-                            ? Colors.green
-                            : Colors.red,
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade600,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
                   ),
-                OutlinedButton.icon(
-                  onPressed: _testing ? null : _testConnection,
-                  icon: _testing
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.wifi_tethering),
-                  label: Text(_testing ? 'Testing...' : 'Test Connection'),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Text(
+                    'Add Playlist',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    textInputAction: TextInputAction.next,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  SegmentedButton<PlaylistType>(
+                    segments: const [
+                      ButtonSegment(
+                        value: PlaylistType.direct,
+                        label: Text('Direct URL'),
+                        icon: Icon(Icons.link),
+                      ),
+                      ButtonSegment(
+                        value: PlaylistType.xtreamCodes,
+                        label: Text('Xtream'),
+                        icon: Icon(Icons.dns),
+                      ),
+                    ],
+                    selected: {_type},
+                    onSelectionChanged: (s) =>
+                        setState(() => _type = s.first),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _urlController,
+                    decoration: InputDecoration(
+                      labelText: _type == PlaylistType.direct
+                          ? 'M3U URL'
+                          : 'Server URL',
+                      hintText: _type == PlaylistType.direct
+                          ? 'https://example.com/playlist.m3u'
+                          : 'http://server:port',
+                    ),
+                    keyboardType: TextInputType.url,
+                    textInputAction: _type == PlaylistType.xtreamCodes
+                        ? TextInputAction.next
+                        : TextInputAction.done,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Required';
+                      final uri = Uri.tryParse(v);
+                      if (uri == null || !uri.hasScheme) return 'Invalid URL';
+                      return null;
+                    },
+                  ),
+                  if (_type == PlaylistType.xtreamCodes) ...[
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration:
+                          const InputDecoration(labelText: 'Username'),
+                      textInputAction: TextInputAction.next,
+                      validator: (v) =>
+                          _type == PlaylistType.xtreamCodes &&
+                                  (v == null || v.isEmpty)
+                              ? 'Required'
+                              : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration:
+                          const InputDecoration(labelText: 'Password'),
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      validator: (v) =>
+                          _type == PlaylistType.xtreamCodes &&
+                                  (v == null || v.isEmpty)
+                              ? 'Required'
+                              : null,
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  if (_testResult != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        _testResult!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: _testResult!.startsWith('Success')
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                      ),
+                    ),
+                  OutlinedButton.icon(
+                    onPressed: _testing ? null : _testConnection,
+                    icon: _testing
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child:
+                                CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.wifi_tethering),
+                    label:
+                        Text(_testing ? 'Testing...' : 'Test Connection'),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: _save,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text('Add Playlist'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: _save,
-          child: const Text('Add'),
-        ),
-      ],
     );
   }
 
@@ -153,12 +192,14 @@ class _AddPlaylistDialogState extends ConsumerState<AddPlaylistDialog> {
     });
 
     final source = _buildSource();
-    final ok = await PlaylistFetchService.testConnection(source.effectiveUrl);
+    final ok =
+        await PlaylistFetchService.testConnection(source.effectiveUrl);
 
     if (mounted) {
       setState(() {
         _testing = false;
-        _testResult = ok ? 'Success! Connection works.' : 'Failed to connect.';
+        _testResult =
+            ok ? 'Success! Connection works.' : 'Failed to connect.';
       });
     }
   }

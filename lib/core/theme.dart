@@ -15,6 +15,7 @@ class AppTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFF1A1A2E),
         elevation: 0,
+        scrolledUnderElevation: 0,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: Colors.deepPurple,
@@ -26,6 +27,15 @@ class AppTheme {
         ),
         filled: true,
         fillColor: const Color(0xFF2A2A3E),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Color(0xFF1E1E2E),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+      ),
+      drawerTheme: const DrawerThemeData(
+        backgroundColor: Color(0xFF1A1A2E),
       ),
     );
   }

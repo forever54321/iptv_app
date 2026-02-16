@@ -1,5 +1,5 @@
 name: iptv_app
-description: "IPTV Player for Windows"
+description: "IPTV Player for iOS"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -12,14 +12,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   media_kit: ^1.1.11
   media_kit_video: ^1.2.5
-  media_kit_libs_video: ^1.0.5
+  media_kit_libs_ios_video: ^1.1.4
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
   cached_network_image: ^3.4.1
   http: ^1.3.0
-  window_manager: ^0.4.3
 
 dev_dependencies:
   flutter_test:
@@ -28,10 +27,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-msix_config:
-  display_name: IPTV Player
-  publisher_display_name: IPTV App
-  identity_name: com.iptvapp.player
-  msix_version: 1.0.0.0
-  logo_path: windows/runner/resources/app_icon.ico

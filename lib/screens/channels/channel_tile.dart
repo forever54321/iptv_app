@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/m3u_entry.dart';
+import '../../providers/rating_provider.dart';
+import '../../widgets/star_rating.dart';
 
-class ChannelTile extends StatelessWidget {
+class ChannelTile extends ConsumerWidget {
   final M3uEntry channel;
   final VoidCallback onTap;
 
@@ -13,7 +16,9 @@ class ChannelTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rating = ref.watch(channelRatingProvider(channel.url));
+
     return Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -28,6 +33,11 @@ class ChannelTile extends StatelessWidget {
                 child: _buildLogo(),
               ),
             ),
+            if (rating != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: StarRating(rating: rating, size: 14),
+              ),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -37,7 +47,8 @@ class ChannelTile extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w500),
               ),
             ),
           ],
@@ -51,8 +62,8 @@ class ChannelTile extends StatelessWidget {
       return CachedNetworkImage(
         imageUrl: channel.tvgLogo!,
         fit: BoxFit.contain,
-        placeholder: (_, _) => const Icon(Icons.live_tv, size: 40),
-        errorWidget: (_, _, _) => const Icon(Icons.live_tv, size: 40),
+        placeholder: (_, __) => const Icon(Icons.live_tv, size: 40),
+        errorWidget: (_, __, ___) => const Icon(Icons.live_tv, size: 40),
       );
     }
     return const Icon(Icons.live_tv, size: 40);
