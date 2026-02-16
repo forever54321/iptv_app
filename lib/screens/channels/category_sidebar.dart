@@ -19,27 +19,30 @@ class CategorySidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 250,
-      child: Container(
-        color: const Color(0xFF1A1A2E),
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            _buildItem(context, 'All Channels', totalCount, null),
-            if (groups.isNotEmpty) ...[
-              _buildHeader(context, 'Categories'),
-              ...groups.map((g) =>
-                  _buildItem(context, g.name, g.channelCount, g)),
-            ],
-            if (languages.isNotEmpty) ...[
-              _buildHeader(context, 'Languages'),
-              ...languages.map((l) =>
-                  _buildItem(context, l.name, l.channelCount, l)),
-            ],
-          ],
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: Text(
+            'Categories',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
         ),
-      ),
+        _buildItem(context, 'All Channels', totalCount, null),
+        if (groups.isNotEmpty) ...[
+          _buildHeader(context, 'Groups'),
+          ...groups.map(
+              (g) => _buildItem(context, g.name, g.channelCount, g)),
+        ],
+        if (languages.isNotEmpty) ...[
+          _buildHeader(context, 'Languages'),
+          ...languages.map(
+              (l) => _buildItem(context, l.name, l.channelCount, l)),
+        ],
+      ],
     );
   }
 
