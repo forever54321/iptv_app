@@ -43,6 +43,11 @@ class StorageService {
     await source.save();
   }
 
+  static Future<void> clearAll() async {
+    final box = await _box;
+    await box.clear();
+  }
+
   static Future<PlaylistSource?> getActive() async {
     final box = await _box;
     try {

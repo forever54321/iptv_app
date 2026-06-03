@@ -27,6 +27,11 @@ class PlaylistSourcesNotifier extends AsyncNotifier<List<PlaylistSource>> {
     await StorageService.setActive(source);
     ref.invalidateSelf();
   }
+
+  Future<void> clearAll() async {
+    await StorageService.clearAll();
+    ref.invalidateSelf();
+  }
 }
 
 final playlistSourcesProvider =
