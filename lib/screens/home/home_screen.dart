@@ -132,7 +132,7 @@ class _PlaylistCard extends ConsumerWidget {
         ),
         onTap: () {
           ref.read(playlistSourcesProvider.notifier).setActive(source);
-          context.go('/channels');
+          context.go('/browse');
         },
       ),
     );

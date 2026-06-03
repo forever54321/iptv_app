@@ -1,3 +1,5 @@
+import 'content_type.dart';
+
 class M3uEntry {
   final String title;
   final String url;
@@ -7,6 +9,7 @@ class M3uEntry {
   final String? tvgId;
   final String? tvgLanguage;
   final int duration;
+  final ContentType contentType;
 
   const M3uEntry({
     required this.title,
@@ -17,5 +20,6 @@ class M3uEntry {
     this.tvgId,
     this.tvgLanguage,
     this.duration = -1,
+    this.contentType = ContentType.live,
   });
 }
