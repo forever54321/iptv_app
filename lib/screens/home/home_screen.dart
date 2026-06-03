@@ -17,6 +17,13 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('IPTV Player'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
+            onPressed: () => context.go('/settings'),
+          ),
+        ],
       ),
       body: sourcesAsync.when(
         loading: () => const LoadingWidget(message: 'Loading playlists...'),

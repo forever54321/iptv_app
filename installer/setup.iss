@@ -4,9 +4,9 @@ AppVersion=1.0.0
 AppPublisher=IPTV App
 DefaultDirName={autopf}\IPTV Player
 DefaultGroupName=IPTV Player
-OutputDir=C:\Users\szaka\iptv_app\installer
+OutputDir={#SourcePath}
 OutputBaseFilename=IPTV_Player_Setup
-SetupIconFile=C:\Users\szaka\iptv_app\windows\runner\resources\app_icon.ico
+SetupIconFile={#SourcePath}..\windows\runner\resources\app_icon.ico
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -21,7 +21,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\szaka\iptv_app\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourcePath}..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\IPTV Player"; Filename: "{app}\iptv_app.exe"

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import '../models/m3u_entry.dart';
 import 'category_filter_provider.dart';
+import 'settings_provider.dart';
 
 class PlayerState {
   final int currentIndex;
@@ -91,8 +92,13 @@ class PlayerNotifier extends Notifier<PlayerState> {
   Future<void> playChannel(int index) async {
     final channels = ref.read(filteredChannelsProvider);
     if (index < 0 || index >= channels.length) return;
+    final settings = ref.read(settingsProvider);
     state = state.copyWith(currentIndex: index);
     await open(channels[index].url);
+    await _player.setVolume(settings.defaultVolume);
+    if (!settings.autoplay) {
+      await _player.pause();
+    }
   }
 
   Future<void> nextChannel() async {

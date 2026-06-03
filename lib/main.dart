@@ -7,6 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:window_manager/window_manager.dart';
 import 'app.dart';
 import 'services/storage_service.dart';
+import 'services/settings_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,7 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
   await StorageService.init();
+  await SettingsService.init();
 
   // Desktop-only: window manager
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
