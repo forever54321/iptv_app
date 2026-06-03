@@ -1,11 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/channel_category.dart';
+import '../models/content_type.dart';
 import '../models/m3u_entry.dart';
 import 'channel_list_provider.dart';
 import 'search_provider.dart';
 
-final categoriesProvider = Provider<List<ChannelCategory>>((ref) {
+/// The content type (Live / Movies / TV Shows) the user picked before browsing.
+/// Null means no selection yet (show the picker).
+final selectedContentTypeProvider =
+    StateProvider<ContentType?>((ref) => null);
+
+/// Number of channels per content type in the active playlist.
+final contentTypeCountsProvider = Provider<Map<ContentType, int>>((ref) {
   final channels = ref.watch(channelListProvider).valueOrNull ?? [];
+  final counts = <ContentType, int>{
+    ContentType.live: 0,
+    ContentType.movie: 0,
+    ContentType.series: 0,
+  };
+  for (final ch in channels) {
+    counts[ch.contentType] = (counts[ch.contentType] ?? 0) + 1;
+  }
+  return counts;
+});
+
+/// Channels in the active playlist restricted to the selected content type.
+final typedChannelsProvider = Provider<List<M3uEntry>>((ref) {
+  final channels = ref.watch(channelListProvider).valueOrNull ?? [];
+  final type = ref.watch(selectedContentTypeProvider);
+  if (type == null) return channels;
+  return channels.where((ch) => ch.contentType == type).toList();
+});
+
+final categoriesProvider = Provider<List<ChannelCategory>>((ref) {
+  final channels = ref.watch(typedChannelsProvider);
   final groupCounts = <String, int>{};
   final langCounts = <String, int>{};
 
@@ -41,7 +69,7 @@ final categoriesProvider = Provider<List<ChannelCategory>>((ref) {
 final selectedCategoryProvider = StateProvider<ChannelCategory?>((ref) => null);
 
 final filteredChannelsProvider = Provider<List<M3uEntry>>((ref) {
-  final channels = ref.watch(channelListProvider).valueOrNull ?? [];
+  final channels = ref.watch(typedChannelsProvider);
   final category = ref.watch(selectedCategoryProvider);
   final query = ref.watch(searchQueryProvider).toLowerCase();
 

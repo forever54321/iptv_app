@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/browse/content_type_screen.dart';
 import '../screens/channels/channels_screen.dart';
 import '../screens/player/player_screen.dart';
 import '../screens/settings/settings_screen.dart';
@@ -10,6 +11,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/browse',
+      builder: (context, state) => const ContentTypeScreen(),
     ),
     GoRoute(
       path: '/channels',

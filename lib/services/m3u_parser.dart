@@ -1,4 +1,5 @@
 import '../models/m3u_entry.dart';
+import '../models/content_type.dart';
 
 class M3uParser {
   static final _attrRegex = RegExp(r'(\w[\w-]*)="([^"]*)"');
@@ -47,15 +48,21 @@ class M3uParser {
       }
 
       if (url != null && url.isNotEmpty) {
+        final groupTitle = attrs['group-title'];
         entries.add(M3uEntry(
           title: title,
           url: url,
-          groupTitle: attrs['group-title'],
+          groupTitle: groupTitle,
           tvgName: attrs['tvg-name'],
           tvgLogo: attrs['tvg-logo'],
           tvgId: attrs['tvg-id'],
           tvgLanguage: attrs['tvg-language'],
           duration: duration,
+          contentType: classifyContentType(
+            url: url,
+            groupTitle: groupTitle,
+            title: title,
+          ),
         ));
       }
     }

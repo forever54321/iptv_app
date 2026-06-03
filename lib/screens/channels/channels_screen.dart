@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../models/channel_category.dart';
+import '../../models/content_type.dart';
 import '../../providers/category_filter_provider.dart';
 import '../../providers/channel_list_provider.dart';
 import '../../providers/search_provider.dart';
@@ -15,6 +16,7 @@ class ChannelsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final channelsAsync = ref.watch(channelListProvider);
+    final contentType = ref.watch(selectedContentTypeProvider);
     final screenWidth = MediaQuery.of(context).size.width;
     final isWideScreen = screenWidth >= 600;
 
@@ -22,9 +24,9 @@ class ChannelsScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/'),
+          onPressed: () => context.go('/browse'),
         ),
-        title: const Text('Channels'),
+        title: Text(contentType?.label ?? 'Channels'),
         actions: [
           // On narrow screens, show filter button for category bottom sheet
           if (!isWideScreen)
@@ -66,6 +68,7 @@ class ChannelsScreen extends ConsumerWidget {
           }
 
           final filtered = ref.watch(filteredChannelsProvider);
+          final typedCount = ref.watch(typedChannelsProvider).length;
           final categories = ref.watch(categoriesProvider);
           final selected = ref.watch(selectedCategoryProvider);
 
@@ -110,7 +113,7 @@ class ChannelsScreen extends ConsumerWidget {
                   groups: groups,
                   languages: languages,
                   selected: selected,
-                  totalCount: allChannels.length,
+                  totalCount: typedCount,
                   onSelect: (cat) {
                     ref.read(selectedCategoryProvider.notifier).state = cat;
                   },
@@ -130,8 +133,7 @@ class ChannelsScreen extends ConsumerWidget {
   void _showCategoryBottomSheet(BuildContext context, WidgetRef ref) {
     final categories = ref.read(categoriesProvider);
     final selected = ref.read(selectedCategoryProvider);
-    final channelsAsync = ref.read(channelListProvider);
-    final totalCount = channelsAsync.valueOrNull?.length ?? 0;
+    final totalCount = ref.read(typedChannelsProvider).length;
 
     final groups =
         categories.where((c) => c.type == CategoryType.group).toList();
